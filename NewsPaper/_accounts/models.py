@@ -45,7 +45,7 @@ class Post(models.Model):
     ]
 
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    _time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True)
     _type = models.CharField(max_length=4, choices=CHOISES, default=news)
     categories = models.ManyToManyField(Category, through='PostCategory')
     title = models.CharField(max_length=100)
@@ -63,6 +63,9 @@ class Post(models.Model):
     def preview(self):
         return self.text[:124] + ' ...'
 
+    def __str__(self):
+        return f'{self.time} {self.title} {self.preview()} {self.rating} \n'
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -73,7 +76,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
-    _time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True)
     rating = models.FloatField(default=0.0)
 
     def like(self):
