@@ -6,14 +6,19 @@ Posts
 {% endblock title %}
 
 {% block content %}
-<h1>Все посты</h1>
+<h1>Поиск постов:</h1>
 <h4>{{ time_now|date:'M d Y' }}</h4>
-<h5><a class="nav-link" href="{{ 'search' }}">Поиск</a></h5>
-<h5><a class="nav-link" href="{{ 'create_news' }}">Создать новость</a></h5>
-<h5><a class="nav-link" href="{{ 'create_post' }}">Создать пост</a></h5>
+<form action="" method="get">
+<!--    <label for="start">Post date:</label>-->
+<!--<input type="date" id="start" name="trip-start"-->
+<!--       value="2022-12-13"-->
+<!--       min="2022-12-13" max="2024-12-31">-->
+    {{ filterset.form.as_p }}
+    <input type="submit" value="Найти">
+</form>
+<h5><a class="nav-link" href="{{ '\news' }}">Назад к новостям</a></h5>
 <hr>
-    {% if news %}
-<h5>Новости</h5>
+{% if search %}
         <table>
             <tr>
                 <td>Дата</td>
@@ -22,48 +27,26 @@ Posts
                 <td>Рейтинг</td>
 
             </tr>
-            {% for newss in news %}
-                {% if newss.typee == 'news' %}
+            {% for newss in search %}
             <tr>
                 <td>{{ newss.time|date:'M d Y H:i' }}</td>
                 <td><a class="nav-link" href="{{ newss.id }}">{{ newss.title|truncatechars:55 }}</a></td>
                 <td>{{ newss.preview|truncatechars:55 }}</td>
                 <td>{{ newss.rating }}</td>
             </tr>
-            {% endif %}
-            {% endfor %}
-        </table>
-<h5>Посты</h5>
-        <table>
-            <tr>
-                <td>Дата</td>
-                <td>Заголовок</td>
-                <td>Превью поста</td>
-                <td>Рейтинг</td>
-
-            </tr>
-            {% for newss in news %}
-                {% if newss.typee == 'post' %}
-            <tr>
-                <td>{{ newss.time|date:'M d Y H:i' }}</td>
-                <td><a class="nav-link" href="{{ newss.id }}">{{ newss.title|truncatechars:55 }}</a></td>
-                <td>{{ newss.preview|truncatechars:55 }}</td>
-                <td>{{ newss.rating }}</td>
-            </tr>
-            {% endif %}
             {% endfor %}
         </table>
     {% else %}
         <h2>Постов нет!</h2>
     {% endif %}
 
-   {% if page_obj.has_previous %}
+    {% if page_obj.has_previous %}
        <a href="?{% url_replace page=1 %}">1</a>
        {% if page_obj.previous_page_number != 1 %}
            ...
            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
        {% endif %}
-   {% endif %}
+    {% endif %}
 
    {% if page_obj.has_next %}
        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>

@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 # Create your models here.
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     rating = models.FloatField(default=0.0)
+
+    def __str__(self):
+        return f'{self.user.username}'
 
     def update_rating(self):
         self.rating = 0
@@ -34,6 +38,9 @@ class Author(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Post(models.Model):
 
@@ -52,6 +59,9 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.FloatField(default=0.0)
 
+    def typee(self):
+        return self._type
+
     def like(self):
         self.rating += 1
         self.save()
@@ -65,6 +75,9 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.time} {self.title} {self.preview()} {self.rating} \n'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
 
 class PostCategory(models.Model):
