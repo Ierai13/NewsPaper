@@ -22,10 +22,17 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
+                        {% if request.user.username %}
+                        <li>
+                            <a class="nav-link" href="/">Профиль {{request.user.username}}</a>
+                        </li>
+                        {% else %}
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Home
-                                <span class="sr-only">(current)</span>
-                            </a>
+                            <a class="nav-link" href="/">Войти</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a class="nav-link" href="/news">Новости и посты</a>
                         </li>
                     </ul>
                 </div>

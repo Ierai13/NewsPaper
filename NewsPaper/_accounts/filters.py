@@ -1,4 +1,5 @@
-from django_filters import FilterSet, ModelChoiceFilter, CharFilter, widgets
+from django_filters import FilterSet, ModelChoiceFilter, CharFilter, widgets, DateFilter
+from django import forms
 from .models import Post, Category
 
 class PostFilter(FilterSet):
@@ -8,12 +9,10 @@ class PostFilter(FilterSet):
         label='Категории',
         empty_label='Любая'
     )
-
+    time = DateFilter(widget=forms.DateInput(attrs={'type': 'date', 'value': '2022-12-13'}), lookup_expr='gt')
+    title = CharFilter(field_name='title', lookup_expr='icontains')
 
     class Meta:
         model = Post
-        fields = {
-            'title': ['icontains'],
-            'time': ['date__gt']
-        }
+        fields = ['title', 'time']
 

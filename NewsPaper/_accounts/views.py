@@ -2,6 +2,7 @@ from django.shortcuts import render
 from datetime import datetime
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from .models import Post
 from .filters import PostFilter
@@ -40,7 +41,8 @@ class PostDetail(DetailView):
     context_object_name = 'newss'
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = ('_accounts.add_post')
     form_class = PostForm
     model = Post
     template_name = 'news_create.html'
@@ -51,7 +53,8 @@ class PostCreate(CreateView):
         return super().form_valid(form)
 
 
-class PostCreatePost(CreateView):
+class PostCreatePost(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = ('_accounts.add_post')
     form_class = PostForm
     model = Post
     template_name = 'news_create.html'
@@ -61,13 +64,15 @@ class PostCreatePost(CreateView):
         post._type = 'post'
         return super().form_valid(form)
 
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = ('_accounts.change_post')
     form_class = PostForm
     model = Post
     template_name = 'news_create.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('_accounts.delete_post')
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
