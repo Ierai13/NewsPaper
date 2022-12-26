@@ -13,3 +13,8 @@ def fcheck(value):
         if a in value:
             value = value.replace(a, b)
     return f'{value}'
+
+
+@register.filter()
+def dictKey(the_dict):
+   return the_dict['usercategory__category__name']

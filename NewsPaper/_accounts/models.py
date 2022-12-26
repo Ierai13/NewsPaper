@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.urls import reverse
 
 
@@ -59,6 +59,12 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.FloatField(default=0.0)
 
+    def categoriess(self):
+        category = []
+        for i in self.categories.values('name'):
+            category.append(i.get('name'))
+        return category
+
     def typee(self):
         return self._type
 
@@ -99,3 +105,8 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+
+class UserCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)

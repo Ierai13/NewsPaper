@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
+from django.shortcuts import redirect
 from django.views.generic.edit import CreateView
-from .models import BaseRegisterForm
 
+from .models import BaseRegisterForm
+from _accounts.models import Author
 
 
 class BaseRegisterView(CreateView):
@@ -17,7 +18,7 @@ def became_author(request):
     author_group = Group.objects.get(name='Authors')
     if not request.user.groups.filter(name='Authors').exists():
         author_group.user_set.add(user)
-#        Author.objects.create(user_id=request.user.id)
+        Author.objects.create(user_id=request.user.id)
     return redirect('/')
 
 
