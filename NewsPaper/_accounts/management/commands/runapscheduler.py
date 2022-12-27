@@ -34,13 +34,13 @@ class Command(BaseCommand):
         # добавляем работу нашему задачнику
         scheduler.add_job(
             notify_subs_last_week,
-            trigger=CronTrigger(day_of_week="mon", hour="23", minute="40"),
+            trigger=CronTrigger(day_of_week="mon", hour="00", minute="00"),
             # То же, что и интервал, но задача тригера таким образом более понятна django
             id="notify_subs_last_week",  # уникальный айди
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'notify_subs_last_week'.")
 
         scheduler.add_job(
             delete_old_job_executions,

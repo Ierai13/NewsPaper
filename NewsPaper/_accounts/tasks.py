@@ -1,3 +1,4 @@
+from celery import shared_task
 from django.conf.global_settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
 from datetime import datetime, timedelta
@@ -6,6 +7,7 @@ from django.utils import timezone
 from _accounts.models import Post, UserCategory, Category
 
 
+@shared_task
 def post_of_last_week():
     prew_week = datetime.now(tz=timezone.utc) - timedelta(7)
     last_week = Post.objects.filter(time__gte=prew_week)

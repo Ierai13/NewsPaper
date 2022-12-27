@@ -1,5 +1,7 @@
 from django import template
 
+from _accounts.models import Category
+
 register = template.Library()
 
 BAD_CHECK = {
