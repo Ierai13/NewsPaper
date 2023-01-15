@@ -9,8 +9,8 @@ app = Celery('NewsPaper')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.conf.beat_schedule = {
-    'notify_subs_last_week': {
-        'task': '_accounts.tasks.notify_subs_last_week',
+    'post_of_last_week': {
+        'task': '_accounts.tasks.post_of_last_week',
         'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
     },
 }

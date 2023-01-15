@@ -20,3 +20,8 @@ def fcheck(value):
 @register.filter()
 def dictKey(the_dict):
    return the_dict['usercategory__category__name']
+
+
+@register.filter()
+def get_cat_id(cat):
+    return Category.objects.get(name=cat).id

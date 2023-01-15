@@ -28,9 +28,9 @@ New
     {% for i in newss.categoriess %}
     <div>{{ i }}
         {% if i not in user_category %}
-        <button><a href="{{ newss.id }}{{ '/subscrube/' }}">Подписаться</a></button>
+        <button><a href="{{ i|get_cat_id }}{{ '/subscrube/' }}">Подписаться</a></button>
         {% else %}
-        <button><a href="{{ newss.id }}{{ '/unsubscrube/' }}">Отписаться</a></button>
+        <button><a href="{{ i|get_cat_id }}{{ '/unsubscrube/' }}">Отписаться</a></button>
         {% endif %}
     </div>
     {% endfor %}

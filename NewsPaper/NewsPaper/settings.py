@@ -71,6 +71,115 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
 ]
 
+ADMINS = [('konstantin', 'kosgal57@gmail.com')]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+    'formatters': {
+        'console_debug': {
+            'format': '%(asctime)s ; %(levelname)s - %(message)s'
+        },
+        'console_warning': {
+            'format': '%(asctime)s ; %(levelname)s - %(message)s ; %(pathname)s'
+        },
+        'console_error': {
+            'format': '%(asctime)s ; %(levelname)s - %(message)s ; %(pathname)s - %(exc_info)s'
+        },
+        'general': {
+            'format': '%(asctime)s ; %(levelname)s - %(module)s : %(message)s;'
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    'handlers': {
+        'console_d': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_debug'
+        },
+        'console_w': {
+            'level': 'WARNING',
+            'filter': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_warning'
+        },
+        'console_e': {
+            'level': 'ERROR',
+            'filter': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_error'
+        },
+        'file_general': {
+            'level': 'INFO',
+            'filter': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'general',
+            'filename': 'general.log'
+        },
+        'file_error': {
+            'level': 'ERROR',
+            'filter': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'console_error',
+            'filename': 'errors.log'
+        },
+        'mail_admin': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'console_warning'
+        },
+        'file_security': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'general',
+            'filename': 'security.log'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general', 'mail_admin', 'file_error'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general', 'mail_admin', 'file_error'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general', 'file_error'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general', 'file_error'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console_d', 'console_w', 'console_e', 'file_general', 'file_security'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}
+
 ROOT_URLCONF = 'NewsPaper.urls'
 
 TEMPLATES = [
@@ -108,6 +217,13 @@ DATABASES = {
     }
 }
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

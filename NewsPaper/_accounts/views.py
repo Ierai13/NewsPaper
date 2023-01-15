@@ -3,6 +3,7 @@ from datetime import datetime
 from django.conf.global_settings import DEFAULT_FROM_EMAIL
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
@@ -58,6 +59,14 @@ class PostDetail(DetailView):
         context['user_category'] = user_category
         return context
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+
+        return obj
+
 
 class PostCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = ('_accounts.add_post')
@@ -112,36 +121,32 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
 @login_required
 def subscrube(request, pk):
     user = request.user.id
-    category = Post.objects.get(id=pk).categories.values('name')
+    category = Category.objects.get(id=pk)
     user_cat = []
     for i in User.objects.filter(id=user).values('usercategory__category__name'):
         user_cat.append(i.get('usercategory__category__name'))
-    for j in category:
-        if j.get('name') not in user_cat:
-            UserCategory.objects.create(user_id=user, category_id=Category.objects.get(name=j.get('name')).id)
+    if category.name not in user_cat:
+        UserCategory.objects.create(user_id=user, category_id=category.id)
 
-            send_mail(
-                subject=f'{request.user.username}',
-                message=f'Вы подписались на категорию {j.get("name")}',
-                from_email=DEFAULT_FROM_EMAIL,
-                recipient_list=[request.user.email]
-            )
+        send_mail(
+            subject=f'{request.user.username}',
+            message=f'Вы подписались на категорию {category.name}',
+            from_email=DEFAULT_FROM_EMAIL,
+            recipient_list=[request.user.email]
+        )
 
-            break
-    return redirect('post_detail', pk)
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
 def unsubscrube(request, pk):
     user = request.user.id
-    category = Post.objects.get(id=pk).categories.values('name')
+    category = Category.objects.get(id=pk)
     user_cat = []
     for i in User.objects.filter(id=user).values('usercategory__category__name'):
         user_cat.append(i.get('usercategory__category__name'))
-    for j in category:
-        if j.get('name') in user_cat:
-            UserCategory.objects.filter(user_id=user, category__name=j.get('name')).delete()
-            break
-    return redirect('post_detail', pk)
+    if category.name in user_cat:
+        UserCategory.objects.filter(user_id=user, category__name=category.name).delete()
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
