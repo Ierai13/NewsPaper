@@ -58,17 +58,27 @@ INSTALLED_APPS = [
 
 DEFAULT_FROM_EMAIL = 'konstantingalunin@yandex.ru'
 
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
 SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'django.middleware.locale.LocaleMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware'
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale')
 ]
 
 ADMINS = [('konstantin', 'kosgal57@gmail.com')]
@@ -108,26 +118,26 @@ LOGGING = {
         },
         'console_w': {
             'level': 'WARNING',
-            'filter': ['require_debug_true'],
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'console_warning'
         },
         'console_e': {
             'level': 'ERROR',
-            'filter': ['require_debug_true'],
+            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'console_error'
         },
         'file_general': {
             'level': 'INFO',
-            'filter': ['require_debug_false'],
+            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
             'formatter': 'general',
             'filename': 'general.log'
         },
         'file_error': {
             'level': 'ERROR',
-            'filter': ['require_debug_false'],
+            'filters': ['require_debug_false'],
             'class': 'logging.FileHandler',
             'formatter': 'console_error',
             'filename': 'errors.log'
